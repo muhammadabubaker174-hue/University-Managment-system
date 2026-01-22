@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Marks </title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+  
+ body {
+            margin: 0;
+            font-family: Arial;
+        }
+
+        .sidebar {
+            width: 230px;
+            height: 100vh;
+            background:linear-gradient(to bottom, #004e92, #000428);
+            position: fixed;
+            color: white;
+            padding-top: 10px;
+        }
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 12px;
+            font-size: 14px;
+            margin: 2px;
+            padding-top: 10px;
+            margin-top: 5px;
+            text-decoration: none;
+            font-display: block;
+        }
+
+        .sidebar a:hover {
+            background: #596e98;
+        }
+        h2{
+            text-align:center;
+            font-size: 23px;
+            margin-bottom: 30px;
+            margin-top: 5px;
+            padding: 5px;
+        }
+
+.main {
+    margin-left: 220px;
+    padding: 15px;
+}
+
+h1 {
+    margin-left: 23%;
+    margin-bottom: 25px;
+    color: #334155;
+}
+
+.row{
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+
+.card{
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 8px 15px rgba(0,0,0,0.1);
+    flex:1;
+}
+
+
+
+input {
+    width: 250px;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+
+
+button {
+    background: #2563eb;
+    color: white;
+    padding: 12px;
+    border: none;
+    width: 100%;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+button:hover {
+    background: #1e40af;
+}
+
+.save {
+    background: #16a34a;
+}
+
+.save:hover {
+    background: #166534;
+}
+
+
+.marks {
+    display: block;
+    gap: 20px;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    border:1px solid #ccc;
+    padding:10px;
+    text-align:left;
+}
+
+th{
+    background:#334155;
+    color:white;
+    width: 50%;
+}
+    </style>
+</head>
+<body>
+
+
+<div class="sidebar" id="sidebar">
+    <h2 style="font-size: 20px;">University Management System</h2>
+    <a href="/">Home</a>
+    <a href="/students">Students Information</a>
+    <a href="/marks">Marks</a>
+    <a href="/edit">Edit Information</a>
+    <a href="/courses">Courses Details</a> 
+    <a href="/gpa">GPA Report</a>
+    <a href="/about">About</a>
+    
+</div>
+
+
+<div class="main">
+
+    <h1>Student Marks Management</h1>
+
+<div class="row">
+
+    
+    <div class="card">
+        <h2>Access Student</h2>
+        <input type="text" id="rollInput" placeholder="Enter Roll No">
+        <button onclick="findStudent()">Find Student</button>
+    </div>
+
+
+    <div class="card">
+        <h2>Student Information</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <td id="studentName">        </td>
+            </tr>
+            <tr>
+                <th>Roll No</th>
+                <td id="studentRoll">        </td>
+            </tr>
+            <tr>
+                <th>Course</th>
+                <td id="studentcourse">         </td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+<br>
+
+   
+    <div class="card">
+        <h2>Enter Marks</h2>
+
+        <div class="marks">
+            <input type="number" id="calculus" placeholder="Calculus">
+            <input type="number" id="physics" placeholder="Physics">
+            <input type="number" id="dm" placeholder="Discrete Math">
+            <input type="number" id="aict" placeholder="AICT">
+            <input type="number" id="pf" placeholder="Programming Fundamentals">
+        </div>
+
+        <button class="save" onclick="saveMarks()">Save Marks</button>
+    </div>
+
+</div>
+<script>
+    function findStudent() {
+    let roll = document.getElementById("rollInput").value;
+
+    fetch(`/student/${roll}`)
+        .then(res => res.json())
+        .then(data => {
+            if (!data.student) {
+                alert("Student not found");
+                return;
+            }
+
+            document.getElementById("studentName").innerText = data.student.name;
+            document.getElementById("studentRoll").innerText = roll;
+            document.getElementById("studentcourse").innerText = data.student.course;
+        });
+}
+function saveMarks() {
+    fetch("/save-marks", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            roll: document.getElementById("rollInput").value,
+            calculus: document.getElementById("calculus").value,
+            physics: document.getElementById("physics").value,
+            dm: document.getElementById("dm").value,
+            aict: document.getElementById("aict").value,
+            pf: document.getElementById("pf").value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+
+        // ✅ Redirect to edit page
+        window.location.href = "/edit";
+    });
+}
+</script>
+</body>
+</html>
+
+
+
+
